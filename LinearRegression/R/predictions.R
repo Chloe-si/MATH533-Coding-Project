@@ -2,9 +2,10 @@
 # todo: confidence intervals/hypothesis tests for individual coefficients,
 # hypothesis tests for multiple cols, hypothesis tests for row constraints
 
-#' Confidence intervals and tests for individual coefficients.
-#' @param model returned object from ols_fit
-#' @param alpha significance level
+# TODO: doesn't seem to work for b vector
+#' Confidence Intervals and Tests for Individual Coefficients.
+#' @param model Returned object from ols_fit
+#' @param alpha Significance level
 #' @param b vector or scalar representing the value(s) to use for the null hypotheses.
 #'   (If vector, it's expected to have the same length as the beta vector.)
 #'      That is, the null hypothesis for the betaj hypothesis test is
@@ -18,22 +19,26 @@ confints_tests_coefficients = function(model,
   X = model$X
   n = nrow(X)
   p = ncol(X)
+  # extract required data from fitted ols model
   betahat = model$coefficients
   sigmahat = model$sigma_cor
-
   se = model$std_error
+
+  # Test statistics of betahat(_j) follows a t-distribution of df=n-p
   zalpha2 = qt(1 - alpha/2, n-p)
   if (bonf) {
     zalpha2 = qt(1 - alpha / (2 * p), n-p)
   }
-  ci_left = betahat - zalpha2 * se
-  ci_right = betahat + zalpha2 * se
+
+  # Confidence interval for batehat(_j)
+  ci_lower = betahat - zalpha2 * se
+  ci_upper = betahat + zalpha2 * se
   tval = abs((betahat - b) / se)
   pval = 2 * pt(tval, n-p, lower.tail=F)
-  adj_pval = pmin(1,pval * p)
+  adj_pval = pmin(1, pval * p)
 
-  results = cbind(betahat, ci_left, ci_right, pval, adj_pval)
-  colnames(results) = c('betahat', 'CI left', 'CI right',
+  results = cbind(betahat, ci_lower, ci_upper, pval, adj_pval)
+  colnames(results) = c('betahat', 'CI lower', 'CI upper',
                         'p-value', 'Adj. p-value')
   return(results)
 }

@@ -1,6 +1,7 @@
 ##Tests for ols estimation
 library(LinearRegression)
-#context("OLS Estimation Tests")
+
+# TODO: need to change test accordingly to align with what we had in ols_estimation
 
 ## Example data
 X <- matrix(c(1, 1, 1, 1, 2, 3, 4, 5), ncol = 2)
