@@ -80,9 +80,13 @@ summary.ols <- function(model) {
   cat("OLS Regression Results\n")
   cat("------------------------------------------------\n")
   cat("Coefficients:\n")
+  if(!exists("confints_tests_coefficients", mode="function")) source("predictions.R")
+  confints_table = confints_tests_coefficients(model)
   coef_table <- data.frame(
     Estimate = model$coefficients,
-    Std.Error = model$std_error
+    Std.Error = model$std_error,
+    CI.left = confints_table[,2],
+    CI.right = confints_table[,3]
   )
   prmatrix(as.matrix(coef_table), rowlab=rep("", nrow(coef_table)))
   cat("------------------------------------------------\n")
