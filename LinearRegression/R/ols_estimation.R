@@ -62,7 +62,11 @@ ols_fit <- function(X, y) {
       adjusted_r_squared = adjusted_r_squared,
       std_error = std_error,
       hat_matrix = hat_matrix,
-      leverages = leverages
+      leverages = leverages,
+      covariance_matrix = covariance_matrix,
+      residuals = residuals,
+      sigmahat_cor = sigmahat_cor,
+      sigmahat_naive = sigmahat_naive
     )
   )
 }
@@ -80,7 +84,7 @@ summary.ols <- function(model) {
     Estimate = model$coefficients,
     Std.Error = model$std_error
   )
-  print(coef_table)
+  prmatrix(as.matrix(coef_table), rowlab=rep("", nrow(coef_table)))
   cat("------------------------------------------------\n")
   cat(sprintf("Multiple R-squared: %.4f\n", model$r_squared))
   cat(sprintf("Adjusted R-squared: %.4f\n", model$adjusted_r_squared))
