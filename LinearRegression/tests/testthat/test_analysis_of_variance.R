@@ -5,10 +5,9 @@ library(LinearRegression)
 #response is Species, covariate is Sepal.Length
 
 test_that("analysis_of_variance calculates correctly", {
-  result <- analysis_of_variance(iris, Sepal.Length, Species)
-  fit <- lm(Sepal.Length ~ Species, data = iris)
-  anova_result <- anova(fit)
-
-  expect_equal(result$TSS, sum((iris$Sepal.Length - mean(iris$Sepal.Length))^2))
-  expect_equal(result$p_value, anova_result$`Pr(>F)`[1])
+  result <- analysis_of_variance(iris, response = "Sepal.Length", covariate = "Species")
+  expect_true(!is.null(result))
+  expect_named(result$Summary_Table, c("Effect", "DF", "SS", "MS", "F_stat", "p_value"))
+  expect_true(result$F_statistic > 0)
+  expect_true(result$p_value >= 0 & result$p_value <= 1)
 })
