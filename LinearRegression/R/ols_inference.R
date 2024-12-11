@@ -71,5 +71,16 @@ multicoef_inference = function(model, testeq0, alpha=0.05) {
 #' @param alpha significance level
 #' @export
 test_row_constraints = function(model, R, r=0, alpha=0.05) {
+  X = model$X
+  n = nrow(X)
+  p = ncol(X)
+  k = nrow(R)
+  betahat = model$coefficients
+  sigmahat_cor = model$sigmahat_cor
 
+  Fstat = (t(R %*% betahat - r)
+           %*% solve(R %*% solve(t(X) %*% X) %*% t(R))
+           %*% (R %*% betahat - r) / k) / sigmahat_cor^2
+  pval = pf(Fstat, k, n-p, lower.tail=F)
+  return(list(Fstat=Fstat, pval=pval))
 }

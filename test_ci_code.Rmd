@@ -42,6 +42,23 @@ coef_inference(fit, b=c(1,2,3,4,5,6,0,0) - 0.03, bonf=T)
 multicoef_inference(fit, testeq0=c(7,8))
 multicoef_inference(fit, testeq0=c(7))
 multicoef_inference(fit, testeq0=c(1,7,8))
+```
 
+```{r}
+# Testing row conditions
+R1 = matrix(c(2,-1,0,0,0,0,0,0), nrow=1, byrow=T)
+R2 = matrix(c(2,-1,0,0,0,0,0,0, 
+              4,0,0,-1,0,0,0,0), nrow=2, byrow=T)
+R3 = matrix(c(0,2,-1,0,0,0,0,0,
+              0,0,0,2,0,-1,0,0), nrow=2, byrow=T)
+r3 = c(1,2)
+R1
+R2
+R3
+
+test_row_constraints(fit, R1)
+test_row_constraints(fit, R2)
+test_row_constraints(fit, R3, r=r3)
+test_row_constraints(fit, R3, r=r3+0.05)
 ```
 
