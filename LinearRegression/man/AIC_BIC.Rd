@@ -4,10 +4,10 @@
 \alias{AIC_BIC}
 \title{Calculate AIC and BIC for an lm Model}
 \usage{
-AIC_BIC(fitted_model)
+AIC_BIC(model)
 }
 \arguments{
-\item{fitted_model}{A fitted model object created by the `lm` function.}
+\item{model}{A fitted model from ols_fit}
 }
 \value{
 A list containing:
@@ -19,9 +19,4 @@ A list containing:
 \description{
 This function computes the Akaike Information Criterion (AIC) and
 Bayesian Information Criterion (BIC) for a fitted linear model created using `lm`.
-}
-\examples{
-data(iris)
-model <- lm(Sepal.Length ~ Sepal.Width, data = iris)
-AIC_BIC(model)
 }

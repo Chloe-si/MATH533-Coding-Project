@@ -7,7 +7,7 @@
 ols_fit(X, y, homo = T)
 }
 \arguments{
-\item{X}{A matrix of predictors (design matrix).}
+\item{X}{A matrix of predictors, if intercept included, must be on p=1.}
 
 \item{y}{A numeric vector of responses.}
 
@@ -16,19 +16,19 @@ ols_fit(X, y, homo = T)
 \value{
 An object of class "ols" containing:
   \itemize{
-    \item \code{X}: Input covariate matrix.
-    \item \code{coefficients}: Estimated coefficients (\eqn{\beta}).
-    \item \code{y_fitted}: Fitted values (\eqn{\hat{y}}).
-    \item \code{residuals}: Residuals (\eqn{e = y - \hat{y}}).
-    \item \code{rss}: Residual Sum of Squares (RSS).
-    \item \code{r_squared}: Coefficient of determination (\eqn{R^2}).
-    \item \code{adjusted_r_squared}: Adjusted \eqn{R^2}.
-    \item \code{std_error}: Standard errors of coefficients.
-    \item \code{hat_matrix}: Hat matrix (\eqn{H}).
-    \item \code{leverages}: Diagonal elements of the hat matrix (\eqn{H}).
-    \item \code{covariance_matrix}: Variance-covariance matrix of coefficients.
-    \item \code{sigmahat_cor}: Corrected sigma estimator for homoscedasticity.
-    \item \code{sigmahat_naive}: Naive sigma estimator.
+    \item {X}: Input covariate matrix.
+    \item {coefficients}: Estimated coefficients (\eqn{\beta}).
+    \item {y_fitted}: Fitted values (\eqn{\hat{y}}).
+    \item {residuals}: Residuals (\eqn{e = y - \hat{y}}).
+    \item {rss}: Residual Sum of Squares.
+    \item {r_squared}: Coefficient of determination (\eqn{R^2}).
+    \item {adjusted_r_squared}: Adjusted \eqn{R^2}.
+    \item {std_error}: Standard errors of coefficients.
+    \item {hat_matrix}: Hat matrix.
+    \item {leverages}: Diagonal elements of the hat matrix.
+    \item {covariance_matrix}: Variance-covariance matrix of coefficients.
+    \item {sigmahat_cor}: Corrected sigma estimator for homoscedasticity.
+    \item {sigmahat_naive}: Naive sigma estimator.
   }
 }
 \description{
