@@ -17,6 +17,7 @@ coef_inference = function(model, alpha=0.05, b=0, bonf=F) {
   X = model$X
   n = nrow(X)
   p = ncol(X)
+  stopifnot(length(b) == 1 || length(b) == p)
   # extract required data from fitted ols model
   betahat = model$coefficients
   sigmahat = model$sigma_cor
@@ -48,7 +49,19 @@ coef_inference = function(model, alpha=0.05, b=0, bonf=F) {
 #' @export
 multicoef_inference = function(model, testeq0, alpha=0.05) {
   X = model$X
+  n = nrow(X)
   p = ncol(X)
+  p2 = length(testeq0)
+  y = model$y
+  sigma12_sqrd = model$sigmahat_naive^2
+
+  X1 = as.matrix(X[,-testeq0])
+  if (!exists("ols_fit", mode = "function")) source("ols_estimation.R")
+  nullmodel = ols_fit(X1, y)
+  sigma1_sqrd = nullmodel$sigmahat_naive^2
+  Fstat = ((sigma1_sqrd - sigma12_sqrd) / p2) / (sigma12_sqrd / (n-p))
+  pval = pf(Fstat, p2, n-p, lower.tail=F)
+  return(list(Fstat=Fstat, pval=pval))
 }
 
 #' Hypothesis test for row constraints H0: R beta = r.

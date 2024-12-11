@@ -106,7 +106,7 @@ ols_summary = function(model) {
   }
 
   # Confidence intervals and tests for coefficients
-  if (!exists("coef_inference", mode = "function")) source("predictions.R")
+  if (!exists("coef_inference", mode = "function")) source("ols_inference.R")
   confints_table = coef_inference(model)
 
   # Create a coefficients table with proper labels
