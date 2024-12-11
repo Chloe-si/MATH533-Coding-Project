@@ -1,69 +1,70 @@
-##Tests for ols estimation
+##  test_file("tests/testthat/test_ols_fit.R")
 library(LinearRegression)
 
-# TODO: need to change test accordingly to align with what we had in ols_estimation
+X = as.matrix(cbind(1, iris$Sepal.Width, iris$Petal.Width))
+colnames(X) = c("(Intercept)", "Sepal.Width", "Petal.Width")
+y = iris$Sepal.Length
 
-## Example data
-X <- matrix(c(1, 1, 1, 1, 2, 3, 4, 5), ncol = 2)
-y <- c(1, 2, 3, 4)
+fitted_ols = ols_fit(X, y)
+fitted_lm = lm(Sepal.Length~Sepal.Width + Petal.Width, data = iris)
+summary_lm = summary(fitted_lm)
 
-ols_result <- ols_fit(X, y)
-
-## Basic tests
-test_that("OLS result is a list with correct components", {
-  expect_type(ols_result, "list")
-  expect_named(ols_result, c("coefficients", "fitted_values", "residuals", "rss"))
-})
-
+# coefficients beta hat test
 test_that("OLS coefficients are computed correctly", {
-  expected_beta <- solve(t(X) %*% X) %*% t(X) %*% y
-  expect_equal(ols_result$coefficients, expected_beta)
+  lm_coef = as.numeric(coef(fitted_lm))
+  ols_coef = as.numeric(fitted_ols$coefficients)
+
+  expect_equal(ols_coef, lm_coef, tolerance = 1e-6)
 })
 
-## Residual and RSS tests
+# Residual and RSS tests
 test_that("OLS residuals and RSS are computed correctly", {
-  y_hat <- X %*% ols_result$coefficients
-  residuals <- y - y_hat
-  rss <- sum(residuals^2)
+  lm_residuals <- as.numeric(residuals(fitted_lm))
+  lm_rss <- sum(lm_residuals^2)
+  ols_residuals =  as.numeric(fitted_ols$residuals)
+  ols_rss = fitted_ols$rss
 
-  expect_equal(ols_result$residuals, residuals)
-  expect_equal(ols_result$rss, rss)
+  expect_equal(ols_residuals, lm_residuals, tolerance = 1e-6)
+  expect_equal(ols_rss, lm_rss, tolerance = 1e-6)
 })
 
-## Predictive tests
+# standard error test
+test_that("OLS standard errors are computed correctly", {
+  lm_stderr = as.numeric(summary_lm$coefficients[, "Std. Error"])
+  ols_stderr = as.numeric(fitted_ols$std_error)
+  expect_equal(ols_stderr, lm_stderr, tolerance = 1e-6)
+})
+
+
+# Predicted value test
 test_that("OLS fitted values are computed correctly", {
-  y_hat <- X %*% ols_result$coefficients
-  expect_equal(ols_result$fitted_values, y_hat)
+  lm_yhat = as.numeric(fitted(fitted_lm))
+  ols_yhat = as.numeric(fitted_ols$y_fitted)
+  expect_equal(ols_yhat, lm_yhat, tolerance = 1e-6)
 })
 
-## Edge cases
-test_that("OLS fit works for simple cases like a single predictor", {
-  X_simple <- cbind(1, c(1, 2, 3, 4)) # Design matrix for simple linear regression
-  y_simple <- c(2, 4, 6, 8)           # y = 2 * x
-  result <- ols_fit(X_simple, y_simple)
-
-  expect_equal(result$coefficients[2], 2) # Slope
-  expect_equal(result$coefficients[1], 0) # Intercept
+# sigma value test
+test_that("OLS sigma value is computed correctly", {
+  lm_sigma = summary_lm$sigma
+  ols_sigma = fitted_ols$sigmahat_cor
+  expect_equal(ols_sigma, lm_sigma, tolerance = 1e-6)
 })
 
-test_that("OLS raises an error for mismatched dimensions", {
-  expect_error(ols_fit(X, y[1:3]), "Number of rows in X must match length of y.")
+# r squared value test
+test_that("OLS r squared value is computed correctly", {
+  lm_rsqd = summary(fitted_lm)$r.squared
+  ols_rsqd = fitted_ols$r_squared
+  expect_equal(ols_rsqd, lm_rsqd, tolerance = 1e-6)
 })
 
-test_that("OLS raises an error if X is not a matrix", {
-  expect_error(ols_fit(data.frame(X), y), "X must be a matrix.")
+# conf ints test
+test_that("OLS's confidence intervals are computed correctly", {
+  lm_confint = as.numeric(confint(fitted_lm))
+  confints_table = confints_tests_coefficients(fitted_ols)
+  ols_lower = as.numeric(confints_table[, 2])
+  ols_upper = as.numeric(confints_table[, 3])
+  ols_confint = c(ols_lower,ols_upper)
+
+  expect_equal(ols_confint, lm_confint, tolerance = 1e-6)
 })
 
-## Large data test
-test_that("OLS works for larger datasets", {
-  set.seed(123)
-  n <- 100
-  p <- 5
-  X_large <- cbind(1, matrix(rnorm(n * p), ncol = p))
-  beta <- rnorm(p + 1)
-  y_large <- X_large %*% beta + rnorm(n, sd = 0.5)
-
-  result <- ols_fit(X_large, y_large)
-  expect_equal(length(result$coefficients), p + 1)
-  expect_true(result$rss >= 0)
-})

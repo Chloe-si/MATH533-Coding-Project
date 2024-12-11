@@ -3,36 +3,30 @@
 #' This function computes the Akaike Information Criterion (AIC) and
 #' Bayesian Information Criterion (BIC) for a fitted linear model created using `lm`.
 #'
-#' @param fitted_model A fitted model object created by the `lm` function.
+#' @param model A fitted model from ols_fit
 #' @return A list containing:
 #' \describe{
 #'   \item{AIC}{The Akaike Information Criterion.}
 #'   \item{BIC}{The Bayesian Information Criterion.}
 #' }
-#' @examples
-#' data(iris)
-#' model <- lm(Sepal.Length ~ Sepal.Width, data = iris)
-#' AIC_BIC(model)
 #' @export
 
 
-AIC_BIC <- function(fitted_model){
+AIC_BIC <- function(model){
 
-  if (!inherits(fitted_model, "lm")) {
-    stop("The input must be a model created by lm().")
-  }
+  # extract number of observations, number of covariates
+  n <- nrow(model$X)
+  p <- length(model$coefficients)
+  # unbiased sigma^2 estimator
+  sigma_sq <- (model$sigmahat_cor)^2
 
-  n <- length(fitted_model$fitted.values)
-  sigma_sq <- sum(resid(fitted_model)^2)/n
+  aic <- n + n * log(2*pi*sigma_sq) + 2*p
+  bic <- n + n * log(2*pi*sigma_sq) + log(n)*p
 
-  #Cardinality of alpha
-  c <- length(coef(fitted_model))
-
-  aic <- n + n * log(2*pi*sigma_sq) + 2*c
-  bic <- n + n * log(2*pi*sigma_sq) + log(n)*c
-
-  list(AIC= aic,
+  return(
+    list(AIC= aic,
        BIC = bic)
+  )
 
 }
 

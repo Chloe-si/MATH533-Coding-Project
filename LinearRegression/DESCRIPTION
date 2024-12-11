@@ -17,3 +17,4 @@ Imports:
     roxygen2,
     stats,
     graphics
+RoxygenNote: 7.3.2

@@ -2,7 +2,6 @@
 # todo: confidence intervals/hypothesis tests for individual coefficients,
 # hypothesis tests for multiple cols, hypothesis tests for row constraints
 
-# TODO: doesn't seem to work for b vector
 #' Confidence Intervals and Tests for Individual Coefficients.
 #' @param model Returned object from ols_fit
 #' @param alpha Significance level

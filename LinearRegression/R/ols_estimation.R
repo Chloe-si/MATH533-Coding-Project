@@ -1,26 +1,28 @@
-# TODO: hetero case for ols fit, the sigma hat estimators.
-
-
 #' Fit an Ordinary Least Squares Model
 #'
-#' @param X A matrix of predictors (design matrix).
+#' Fits a linear regression model using Ordinary Least Squares (OLS).
+#'
+#' @param X A matrix of predictors, if intercept included, must be on p=1.
 #' @param y A numeric vector of responses.
-#' @param homo True forhomoscedasticity assumption, False for hetero
+#' @param homo Logical; TRUE assumes homoscedasticity (default), FALSE assumes heteroscedasticity.
 #' @return An object of class "ols" containing:
-#'   - `X`: input covariate matrix X
-#'   - `coefficients`: Estimated coefficients (beta_hat).
-#'   - `y_fitted`: Fitted values (y_hat).
-#'   - `residuals`: Residuals (e = y - y_hat).
-#'   - `rss`: Residual Sum of Squares (RSS).
-#'   - `r_squared`: Coefficient of determination (R^2).
-#'   - `adjusted_r_squared`: Adjusted R^2.
-#'   - `std_error`: Standard errors of coefficients.
-#'   - `hat_matrix`: Hat matrix H
-#'   - `leverages`: Diagonal elements of hat matrix H
-#'   - `covariance_matrix`: Variance-Covariance matrix of beta_hat given X
-#'   - `sigmahat_cor`: Corrected sigma estimator under homoscedasticity assumption
-#'   - `sigmahat_naive`: Naive estimator of sigma under homoscedasticity assumption
+#'   \itemize{
+#'     \item {X}: Input covariate matrix.
+#'     \item {coefficients}: Estimated coefficients (\eqn{\beta}).
+#'     \item {y_fitted}: Fitted values (\eqn{\hat{y}}).
+#'     \item {residuals}: Residuals (\eqn{e = y - \hat{y}}).
+#'     \item {rss}: Residual Sum of Squares.
+#'     \item {r_squared}: Coefficient of determination (\eqn{R^2}).
+#'     \item {adjusted_r_squared}: Adjusted \eqn{R^2}.
+#'     \item {std_error}: Standard errors of coefficients.
+#'     \item {hat_matrix}: Hat matrix.
+#'     \item {leverages}: Diagonal elements of the hat matrix.
+#'     \item {covariance_matrix}: Variance-covariance matrix of coefficients.
+#'     \item {sigmahat_cor}: Corrected sigma estimator for homoscedasticity.
+#'     \item {sigmahat_naive}: Naive sigma estimator.
+#'   }
 #' @export
+
 ols_fit = function(X, y, homo = T) {
   if (!is.matrix(X)) stop("X must be a matrix.")
   if (!is.numeric(y)) stop("y must be a numeric vector.")
@@ -39,13 +41,13 @@ ols_fit = function(X, y, homo = T) {
   residuals = y - y_hat
 
   # Residual Sum of Squares (RSS)
-  rss = sum(residuals^2)
+  rss = sum(as.numeric(residuals)^2)
 
   # Standard Errors of Coefficients
   if (homo){
     sigmahat_cor = sqrt(rss / (n - p))
     sigmahat_naive = sqrt(rss / n)
-    covariance_matrix = sigmahat_cor * solve(t(X) %*% X)
+    covariance_matrix = sigmahat_cor^2 * solve(t(X) %*% X)
     std_error = sqrt(diag(covariance_matrix))
   }
   else{
@@ -69,6 +71,7 @@ ols_fit = function(X, y, homo = T) {
   return(
     list(
       X = X,
+      y = y,
       coefficients = beta_hat,
       y_fitted = y_hat,
       residuals = residuals,
@@ -91,7 +94,7 @@ ols_fit = function(X, y, homo = T) {
 #' @param model An object of fitted OLS.
 #' @return A summary of the OLS model fit.
 #' @export
-summary.ols = function(model) {
+ols_summary = function(model) {
   cat("OLS Regression Results\n")
   cat("------------------------------------------------\n")
   cat("Coefficients:\n")
@@ -99,7 +102,7 @@ summary.ols = function(model) {
   # Get the column names of X (or assign default names if missing)
   coef_names = colnames(model$X)
   if (is.null(coef_names)) {
-    coef_names = c("(Intercept)", paste0("X", seq_along(model_ols$coefficients[-1])))
+    coef_names = c("(Intercept)", paste0("X", seq_along(model$coefficients[-1])))
   }
 
   # Confidence intervals and tests for coefficients
@@ -109,9 +112,9 @@ summary.ols = function(model) {
   # Create a coefficients table with proper labels
   coef_table = data.frame(
     Estimate = model$coefficients,
-    `Std. Error` = model$std_error,
-    `CI Lower` = confints_table[, 2],
-    `CI Upper` = confints_table[, 3]
+    `Std_Error` = model$std_error,
+    `CI_Lower` = confints_table[, 2],
+    `CI_Upper` = confints_table[, 3]
   )
   rownames(coef_table) = coef_names
 
