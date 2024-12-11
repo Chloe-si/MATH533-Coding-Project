@@ -60,11 +60,21 @@ test_that("OLS r squared value is computed correctly", {
 # conf ints test
 test_that("OLS's confidence intervals are computed correctly", {
   lm_confint = as.numeric(confint(fitted_lm))
-  confints_table = confints_tests_coefficients(fitted_ols)
+  confints_table = coef_inference(fitted_ols)
   ols_lower = as.numeric(confints_table[, 2])
   ols_upper = as.numeric(confints_table[, 3])
   ols_confint = c(ols_lower,ols_upper)
 
   expect_equal(ols_confint, lm_confint, tolerance = 1e-6)
 })
+
+# p value test
+test_that("OLS's p values are computed correctly", {
+  lm_pval <- as.numeric(coef(summary_lm)[, "Pr(>|t|)"])
+  confints_table = coef_inference(fitted_ols)
+  ols_pval = as.numeric(confints_table[, 4])
+
+  expect_equal(ols_pval, lm_pval, tolerance = 1e-6)
+})
+
 

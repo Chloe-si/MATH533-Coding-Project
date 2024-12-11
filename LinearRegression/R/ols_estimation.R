@@ -106,15 +106,16 @@ ols_summary = function(model) {
   }
 
   # Confidence intervals and tests for coefficients
-  if (!exists("confints_tests_coefficients", mode = "function")) source("predictions.R")
-  confints_table = confints_tests_coefficients(model)
+  if (!exists("coef_inference", mode = "function")) source("predictions.R")
+  confints_table = coef_inference(model)
 
   # Create a coefficients table with proper labels
   coef_table = data.frame(
     Estimate = model$coefficients,
     `Std_Error` = model$std_error,
     `CI_Lower` = confints_table[, 2],
-    `CI_Upper` = confints_table[, 3]
+    `CI_Upper` = confints_table[, 3],
+    `P_Val` = confints_table[, 4]
   )
   rownames(coef_table) = coef_names
 

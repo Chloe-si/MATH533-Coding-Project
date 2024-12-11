@@ -13,8 +13,7 @@
 #' @return A named matrix with the left bound, right bound, p-value for test,
 #'  and adjusted p-value
 #' @export
-confints_tests_coefficients = function(model,
-                                       alpha=0.05, b=0, bonf=F) {
+coef_inference = function(model, alpha=0.05, b=0, bonf=F) {
   X = model$X
   n = nrow(X)
   p = ncol(X)
@@ -47,7 +46,7 @@ confints_tests_coefficients = function(model,
 #' @param testeq0 vector of values from 1 to p, indicating which coefficients are being tested
 #' @param alpha significance level
 #' @export
-test_multiple_coefficients = function(model, testeq0, alpha=0.05) {
+multicoef_inference = function(model, testeq0, alpha=0.05) {
   X = model$X
   p = ncol(X)
 }
