@@ -4,14 +4,14 @@
 \alias{ridge_estimator}
 \title{Ridge Regression Estimator}
 \usage{
-ridge_estimator(X, y, lambda)
+ridge_estimator(X_values, y_values, lambda)
 }
 \arguments{
+\item{lambda}{A numeric value representing the regularization parameter (\(\lambda > 0\)).}
+
 \item{X}{A numeric matrix representing the design matrix.}
 
 \item{y}{A numeric vector representing the response variable.}
-
-\item{lambda}{A numeric value representing the regularization parameter (\(\lambda > 0\)).}
 }
 \value{
 A numeric vector containing the ridge regression coefficients.
@@ -20,9 +20,9 @@ A numeric vector containing the ridge regression coefficients.
 This function computes the ridge regression estimator for a given design matrix, response vector, and regularization parameter.
 }
 \examples{
-set.seed(123)
-X <- matrix(rnorm(100), nrow = 10, ncol = 10)
-y <- rnorm(10)
+X_values <- as.matrix(cbind(1, iris$Sepal.Width, iris$Petal.Width))
+colnames(X_values) <- c("Intercept", "Sepal.Width", "Petal.Width")
+y_values <- iris$Sepal.Length
 lambda <- 0.1
-ridge_estimator(X, y, lambda)
+ridge_estimator(X_values, y_values, lambda)
 }
