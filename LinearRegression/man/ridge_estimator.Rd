@@ -4,14 +4,14 @@
 \alias{ridge_estimator}
 \title{Ridge Regression Estimator}
 \usage{
-ridge_estimator(X_values, y_values, lambda)
+ridge_estimator(X, y, lambda)
 }
 \arguments{
-\item{lambda}{A numeric value representing the regularization parameter (\(\lambda > 0\)).}
-
 \item{X}{A numeric matrix representing the design matrix.}
 
 \item{y}{A numeric vector representing the response variable.}
+
+\item{lambda}{A numeric value representing the regularization parameter (\(\lambda > 0\)).}
 }
 \value{
 A numeric vector containing the ridge regression coefficients.

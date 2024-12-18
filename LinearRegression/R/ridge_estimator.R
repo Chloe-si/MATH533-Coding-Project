@@ -13,22 +13,22 @@
 #'lambda <- 0.1
 #' ridge_estimator(X_values, y_values, lambda)
 #' @export
-#' 
+#'
 
 
-ridge_estimator <- function(X_values, y_values, lambda) {
+ridge_estimator <- function(X, y, lambda) {
   if (!is.matrix(X)) stop("Error: X must be a matrix.")
   if (!is.vector(y)) stop("Error: y must be a vector.")
   if (lambda < 0 || qr(X)$rank < ncol(X)) {
     stop("Error: Either lambda must be greater than zero or the design matrix X must be full rank.")
   }
-  
+
   p <- ncol(X)
-  
+
   XtX <- t(X) %*% X
   XtY <- t(X) %*% y
   ridge_beta <- solve(XtX + lambda * diag(p)) %*% XtY
-  
+
   return(ridge_beta)
 }
 

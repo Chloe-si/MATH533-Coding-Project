@@ -1,12 +1,13 @@
 Package: LinearRegression
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Comprehensive tools for Linear Regression
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Yuka Kato, Lilian Yuan, Chloe Si
+Description: This package provides tools for linear regression analysis, 
+    including ordinary least squares (OLS) estimation, ridge regression, 
+    confidence intervals and hypothesis testing for coefficients, 
+    model comparison via AIC and BIC, ANOVA for categorical and continuous 
+    predictors, and prediction with optional confidence intervals.
 Encoding: UTF-8
 LazyData: true
 Suggests: 
